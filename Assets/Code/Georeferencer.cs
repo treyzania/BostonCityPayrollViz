@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 namespace BostonViz {
 
 	public class Georeferencer : MonoBehaviour {
