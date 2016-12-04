@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4820100079034420}
   - component: {fileID: 114894189330487288}
   m_Layer: 0
-  m_Name: Georef
+  m_Name: Georeferece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

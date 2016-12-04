@@ -11,7 +11,7 @@ namespace BostonViz {
 		public float Latitude {
 
 			get {
-				return this.latLonPosition.x;
+				return this.latLonPosition.y;
 			}
 
 		}
@@ -19,7 +19,7 @@ namespace BostonViz {
 		public float Longitude {
 
 			get { 
-				return this.latLonPosition.y;
+				return this.latLonPosition.x;
 			}
 
 		}
