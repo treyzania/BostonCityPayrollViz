@@ -8,15 +8,14 @@ namespace BostonViz {
 
 		public GameObject georeferenceContainer;
 		
-		public Vector3 MeanPositionGeoreference(Vector2 given) {
+		public Vector3 MeanPositionGeoreference (Vector2 given) {
 
 			Debug.Log ("Georeffing " + given);
 			GeorefWaypoint[] wpts = this.georeferenceContainer.GetComponentsInChildren<GeorefWaypoint> ();
 
-			Vector2 sum = Vector2.zero;
-			int components = 0;
+			List<Matrix4x4> mats = new List<Matrix4x4> ();
 
-			// It's okay that we technically do each of these twice, because they all get the double weight anyways.
+			// Find each "plane" and generate a matrix for each of them.
 			for (int i = 0; i < wpts.Length; i++) {
 
 				GeorefWaypoint w1 = wpts [i];
@@ -25,37 +24,70 @@ namespace BostonViz {
 
 					GeorefWaypoint w2 = wpts [j];
 
-					// Don't do anything with itself because that gets messy really fast.
-					if (w1 == w2) continue;
+					for (int k = j; k < wpts.Length; k++) {
+						
+						GeorefWaypoint w3 = wpts [k];
 
-					// FIXME Make this a more general algorithm that actually takes into account how it's 3D and stuff.
+						// Don't do anything with itself because that gets messy really fast.
+						if (w1 == w2 || w1 == w3 || w2 == w3) continue;
 
-					// Pull out useful values.  The names aren't really consistent at this point, but don't think about that.
-					float w1x = Mathf.Min (w1.transform.position.x, w2.transform.position.x);
-					float w2x = Mathf.Max (w1.transform.position.x, w2.transform.position.x);
-					float w1y = Mathf.Min (w1.transform.position.y, w2.transform.position.y);
-					float w2y = Mathf.Max (w1.transform.position.y, w2.transform.position.y);
-					float w1lat = Mathf.Min (w1.Latitude, w2.Latitude);
-					float w1lon = Mathf.Min (w1.Longitude, w2.Longitude);
-					float w2lat = Mathf.Max (w1.Latitude, w2.Latitude);
-					float w2lon = Mathf.Max (w1.Longitude, w2.Longitude);
+						// Transform the vectors from the input coords into real coordinates.
+						Vector3 ll1 = new Vector3 (w1.Longitude, 1, w1.Latitude);
+						Vector3 ll2 = new Vector3 (w2.Longitude, 1, w2.Latitude);
+						Vector3 ll3 = new Vector3 (w3.Longitude, 1, w3.Latitude);
 
-					// Perform the georeferencing calculation.
-					float nx = ((given.x - w1lat) / (w2lat - w1lat)) * (w2x - w1x) + w1x;
-					float ny = ((given.y - w1lon) / (w2lon - w1lon)) * (w2y - w1y) + w1y;
+						// Make our matrix of input points.
+						Matrix4x4 inMat = Matrix4x4.identity;
+						inMat [0, 0] = ll1 [0];
+						inMat [0, 1] = ll1 [1];
+						inMat [0, 2] = ll1 [2];
+						inMat [1, 0] = ll2 [0];
+						inMat [1, 1] = ll2 [1];
+						inMat [1, 2] = ll2 [2];
+						inMat [2, 0] = ll3 [0];
+						inMat [2, 1] = ll3 [1];
+						inMat [2, 2] = ll3 [2];
 
-					// Add it to the accumulator
-					Vector2 here = new Vector2 (nx, ny);
-					Debug.Log ("adding sum: " + here + "\t(" + w1 + ", " + w2 + ")");
-					sum += here;
-					components++;
+						// Make our matrix of output points.
+						Matrix4x4 outMat = Matrix4x4.identity;
+						outMat [0, 0] = w1.transform.position [0];
+						outMat [0, 1] = w1.transform.position [1];
+						outMat [0, 2] = w1.transform.position [2];
+						outMat [1, 0] = w2.transform.position [0];
+						outMat [1, 1] = w2.transform.position [1];
+						outMat [1, 2] = w2.transform.position [2];
+						outMat [2, 0] = w3.transform.position [0];
+						outMat [2, 1] = w3.transform.position [1];
+						outMat [2, 2] = w3.transform.position [2];
+
+						// Figure out the transformation matrix for everything, biotch!
+						mats.Add(inMat.inverse * outMat);
+
+					}
 
 				}
 
 			}
 
+			// Sanity check.
+			if (mats.Count == 0) {
+
+				Debug.Log ("Not enough valid georeference points!");
+				return Vector2.zero;
+
+			}
+
+			// Average the result of all of the transformations.
+			Vector4 realGiven = new Vector4 (given.x, 0, given.y, 1);
+			Vector4 sum = Vector4.zero;
+			foreach (Matrix4x4 mat in mats) {
+				sum += mat * realGiven;
+			}
+
+			Debug.Log ("Using " + mats.Count + " matricies.");
+
 			// Calculate the average vector and return.
-			return new Vector2 (sum.x / ((float) components), sum.y / ((float) components));
+			return new Vector2 (sum.x / mats.Count, sum.z / mats.Count);
 
 		}
 

@@ -22,11 +22,13 @@ namespace BostonViz {
 				Vector2 georefed = this.georef.MeanPositionGeoreference (col.postion);
 
 				// Instantiate
-				GameObject colObj = (GameObject) GameObject.Instantiate(this.columnPrefab, new Vector3(georefed.x, 0, georefed.y), Quaternion.identity);
-				ColumnController ctrl = colObj.GetComponent<ColumnController>();
+				GameObject colObj = (GameObject) GameObject.Instantiate (this.columnPrefab, new Vector3 (georefed.x, 0, georefed.y), Quaternion.identity, this.transform);
+				ColumnController ctrl = colObj.GetComponent<ColumnController> ();
+				GeorefPositionKeeper keeper = colObj.GetComponent<GeorefPositionKeeper> ();
 
-				// Set height
+				// Set params
 				ctrl.targetHeigtScale = col.height;
+				keeper.latLon = col.postion;
 
 			}
 
