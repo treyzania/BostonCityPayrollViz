@@ -38,30 +38,30 @@ namespace BostonViz {
 
 						// Make our matrix of input points.
 						Matrix4x4 inMat = Matrix4x4.identity;
-						inMat [0, 0] = ll1 [0];
-						inMat [0, 1] = ll1 [1];
-						inMat [0, 2] = ll1 [2];
-						inMat [1, 0] = ll2 [0];
-						inMat [1, 1] = ll2 [1];
-						inMat [1, 2] = ll2 [2];
-						inMat [2, 0] = ll3 [0];
-						inMat [2, 1] = ll3 [1];
-						inMat [2, 2] = ll3 [2];
+						inMat [0, 0] = ll1.x;
+						inMat [1, 0] = ll1.y;
+						inMat [2, 0] = ll1.z;
+						inMat [0, 1] = ll2.x;
+						inMat [1, 1] = ll2.y;
+						inMat [2, 1] = ll2.z;
+						inMat [0, 2] = ll3.x;
+						inMat [1, 2] = ll3.y;
+						inMat [2, 2] = ll3.z;
 
 						// Make our matrix of output points.
 						Matrix4x4 outMat = Matrix4x4.identity;
-						outMat [0, 0] = w1.transform.position [0];
-						outMat [0, 1] = w1.transform.position [1];
-						outMat [0, 2] = w1.transform.position [2];
-						outMat [1, 0] = w2.transform.position [0];
-						outMat [1, 1] = w2.transform.position [1];
-						outMat [1, 2] = w2.transform.position [2];
-						outMat [2, 0] = w3.transform.position [0];
-						outMat [2, 1] = w3.transform.position [1];
-						outMat [2, 2] = w3.transform.position [2];
+						outMat [0, 0] = w1.transform.position.x;
+						outMat [1, 0] = w1.transform.position.y;
+						outMat [2, 0] = w1.transform.position.z;
+						outMat [0, 1] = w2.transform.position.x;
+						outMat [1, 1] = w2.transform.position.y;
+						outMat [2, 1] = w2.transform.position.z;
+						outMat [0, 2] = w3.transform.position.x;
+						outMat [1, 2] = w3.transform.position.y;
+						outMat [2, 2] = w3.transform.position.z;
 
 						// Figure out the transformation matrix for everything, biotch!
-						mats.Add(inMat.inverse * outMat);
+						mats.Add(outMat * inMat.inverse);
 
 					}
 
@@ -78,7 +78,7 @@ namespace BostonViz {
 			}
 
 			// Average the result of all of the transformations.
-			Vector4 realGiven = new Vector4 (given.x, 0, given.y, 1);
+			Vector4 realGiven = new Vector4 (given.x, 1, given.y, 1);
 			Vector4 sum = Vector4.zero;
 			foreach (Matrix4x4 mat in mats) {
 				sum += mat * realGiven;
