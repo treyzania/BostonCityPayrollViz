@@ -454,7 +454,7 @@ PlayerSettings:
   vrEditorSettings: {}
   cloudServicesEnabled:
     UNet: 1
-  cloudProjectId: 0bb714ef-b207-49cc-add5-2f61be6c854f
-  projectName: BostonCityPayrollViz
-  organizationId: treyzania
+  cloudProjectId: 
+  projectName: 
+  organizationId: 
   cloudEnabled: 0
