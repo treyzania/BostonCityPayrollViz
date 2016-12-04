@@ -84,7 +84,7 @@ namespace BostonViz {
 				sum += mat * realGiven;
 			}
 
-			Debug.Log ("Using " + mats.Count + " matricies.");
+			Debug.Log ("Using " + mats.Count + " matricies, matrix 0: " + mats[0]);
 
 			// Calculate the average vector and return.
 			return new Vector2 (sum.x / mats.Count, sum.z / mats.Count);
