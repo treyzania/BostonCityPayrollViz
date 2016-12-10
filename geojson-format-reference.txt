@@ -1,0 +1,26 @@
+- [root]
+	- string type
+	- object crs
+		- string type
+		- object properties
+			- string name
+	- array features
+		- object
+			- string type
+			- object properties
+				- string ZIP_CODE
+				- string NAME
+				- string STATE
+				- number POPULATION
+				- number POP_SQMI
+				- number SQMI
+				- number Shape_Leng
+				- number Shape_Area
+			-object geometry
+				- string type
+				- array coordinates
+					- array "polygons" (?)
+						- array "polycoords" (?)
+							- array "pointaxiscoords" (?)
+								- number [0] "lon" (?)
+								- number [1] "lat" (?)
