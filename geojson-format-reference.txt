@@ -16,7 +16,7 @@
 				- number SQMI
 				- number Shape_Leng
 				- number Shape_Area
-			-object geometry
+			- object geometry
 				- string type
 				- array coordinates
 					- array "polygons" (?)

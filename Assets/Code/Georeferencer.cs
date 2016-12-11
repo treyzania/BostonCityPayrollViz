@@ -9,8 +9,7 @@ namespace BostonViz {
 		public GameObject georeferenceContainer;
 		
 		public Vector3 MeanPositionGeoreference (Vector2 given) {
-
-			Debug.Log ("Georeffing " + given);
+			
 			GeorefWaypoint[] wpts = this.georeferenceContainer.GetComponentsInChildren<GeorefWaypoint> ();
 
 			List<Matrix4x4> mats = new List<Matrix4x4> ();
@@ -83,8 +82,6 @@ namespace BostonViz {
 			foreach (Matrix4x4 mat in mats) {
 				sum += mat * realGiven;
 			}
-
-			Debug.Log ("Using " + mats.Count + " matricies, matrix 0: " + mats[0]);
 
 			// Calculate the average vector and return.
 			return new Vector2 (sum.x / mats.Count, sum.z / mats.Count);
