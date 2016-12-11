@@ -17,7 +17,7 @@ namespace BostonViz {
 
 		private Georeferencer geo;
 
-		public string jsonPath = "foo.json";
+		public string jsonPath = "foo";
 		private TextAsset jsonAsset;
 
 		void Start () {
@@ -119,10 +119,53 @@ namespace BostonViz {
 
 				}
 
-				// Actually create the Mesh.
-				Mesh m = new Mesh ();
-				m.vertices = verts;
-				m.triangles = triArray;
+				// Mesh for the sides.
+				Mesh side = new Mesh ();
+				side.vertices = verts;
+				side.triangles = triArray;
+
+				// Make ourselves the top of the pillar.  First, set up the points.
+				Vector3[] topVerts = new Vector3 [zip.points.Count]; 
+				for (int i = 0; i < topVerts.Length; i++) {
+					topVerts [i] = new Vector3 (zip.points [i].x, 1, zip.points [i].y);
+				}
+
+				// Naive method to make the triangles.  Only works for convex polygons.
+				List<Tri> topTris = new List<Tri> ();
+				for (int i = 0; i < topVerts.Length; i++) {
+					topTris.Add (new Tri (0, i, (i + 1) % topVerts.Length));
+				}
+
+				// Convert the tris to the native kind.
+				int[] topTriVerts = new int [topTris.Count * 3];
+				for (int i = 0; i < topTris.Count; i++) {
+
+					Tri t = topTris [i];
+
+					topTriVerts [i * 3] = t.a;
+					topTriVerts [(i * 3) + 1] = t.b;
+					topTriVerts [(i * 3) + 2] = t.c; 
+
+				}
+				
+				// Mesh for the top.
+				Mesh top = new Mesh();
+				top.vertices = topVerts;
+				top.triangles = topTriVerts;
+
+				// Combine the meshes.
+				Mesh m = new Mesh();
+				CombineInstance combSide = new CombineInstance ();
+				combSide.mesh = side;
+				combSide.subMeshIndex = 0;
+				combSide.transform = Matrix4x4.identity;
+				CombineInstance combTop = new CombineInstance ();
+				combTop.mesh = top;
+				combTop.subMeshIndex = 0;
+				combTop.transform = Matrix4x4.identity;
+				m.CombineMeshes (new CombineInstance [] { combSide, combTop });
+
+				// Cleanup
 				m.RecalculateBounds ();
 				m.RecalculateNormals ();
 
@@ -142,7 +185,7 @@ namespace BostonViz {
 				go.transform.position = this.transform.position;
 
 				// Set the name.
-				go.name = zip.id + " (" + zip.name + ")";
+				go.name = zip.id;
 
 				// Set the mesh to render.
 				MeshFilter filter = go.GetComponentInChildren<MeshFilter> ();
@@ -158,6 +201,7 @@ namespace BostonViz {
 
 			this.stateString = "Done!";
 
+			this.enabled = false;
 			yield return null;
 
 		}
