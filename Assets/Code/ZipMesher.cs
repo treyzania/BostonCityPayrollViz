@@ -100,8 +100,8 @@ namespace BostonViz {
 				for (int i = 0; i < verts.Length; i += 2) {
 
 					// Do this clockwise, because fuck logic.
-					tris.Add(new Tri(i, (i + 1) % verts.Length, (i + 2) % verts.Length));
-					tris.Add(new Tri((i + 1) % verts.Length, (i + 3) % verts.Length, (i + 2) % verts.Length));
+					tris.Add(new Tri(i, (i + 3) % verts.Length, (i + 1) % verts.Length));
+					tris.Add(new Tri(i, (i + 2) % verts.Length, (i + 3) % verts.Length));
 
 					totalTris += 2;
 
@@ -113,9 +113,9 @@ namespace BostonViz {
 
 					Tri t = tris [i];
 
-					triArray [i] = t.a;
-					triArray [i + 1] = t.b;
-					triArray [i + 2] = t.c;
+					triArray [i * 3] = t.a;
+					triArray [(i * 3) + 1] = t.b;
+					triArray [(i * 3) + 2] = t.c;
 
 				}
 
@@ -124,6 +124,7 @@ namespace BostonViz {
 				m.vertices = verts;
 				m.triangles = triArray;
 				m.RecalculateBounds ();
+				m.RecalculateNormals ();
 
 				zip.mesh = m;
 
@@ -131,7 +132,7 @@ namespace BostonViz {
 
 			}
 
-			Debug.Log ("Generated a total of " + totalVerts + " verts making up a total of " + totalTris + "tris.");
+			Debug.Log ("Generated a total of " + totalVerts + " verts making up a total of " + totalTris + " tris.");
 			this.stateString = "Spawning GameObjects";
 
 			// Create the GameObjects for the things.
@@ -145,7 +146,7 @@ namespace BostonViz {
 
 				// Set the mesh to render.
 				MeshFilter filter = go.GetComponentInChildren<MeshFilter> ();
-				filter.mesh = GameObject.Instantiate (zip.mesh);
+				filter.mesh = zip.mesh;
 
 				// Turn off shadowcasting because that shit gets expensive.
 				MeshRenderer renderer = go.GetComponentInChildren<MeshRenderer> ();
