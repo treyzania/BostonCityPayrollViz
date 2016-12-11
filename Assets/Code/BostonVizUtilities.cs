@@ -14,7 +14,7 @@ namespace BostonViz {
 
 	public class DotNetSucksBalls {
 
-        public static bool ConsistsOfWhiteSpace(string s){
+        public static bool ConsistsOfWhiteSpace (string s){
             foreach(char c in s){
                 if(c != ' ') return false;
             }
@@ -22,7 +22,7 @@ namespace BostonViz {
         
         }
 
-        public static bool IsNullOrWhiteSpace(string s) {
+        public static bool IsNullOrWhiteSpace (string s) {
             return s == null || ConsistsOfWhiteSpace(s);
         }
 
@@ -37,7 +37,7 @@ namespace BostonViz {
         public List<Vector2> points = new List<Vector2>();
         public Mesh mesh = null;
 
-        public ZipCode(string id, string name, float pop, float area) {
+        public ZipCode (string id, string name, float pop, float area) {
 
             this.id = id;
             this.name = name;
@@ -53,11 +53,29 @@ namespace BostonViz {
 
         public int a, b, c;
 
-        public Tri(int a, int b, int c) {
+        public Tri (int a, int b, int c) {
             
             this.a = a;
             this.b = b;
             this.c = c;
+
+        }
+
+    }
+
+    public struct PayrollEntry {
+
+        public string zip;
+        public float totalPay;
+        public string department, title;
+
+        public PayrollEntry (string zip, float totalPay, string dept, string title) {
+
+            this.zip = zip;
+            this.totalPay = totalPay;
+
+            this.department = dept;
+            this.title = title;
 
         }
 
