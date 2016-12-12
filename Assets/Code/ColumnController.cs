@@ -6,15 +6,20 @@ namespace BostonViz {
 
 	public class ColumnController : MonoBehaviour {
 
-		public float targetHeigtScale = 1F;
+		public float targetHeightScale = 1F;
 		public float lerpFactor = 1F;
 
-		void Start () {
+		private MeshRenderer mr;
 
+		void Start () {
+			this.mr = this.transform.FindChild("Model").gameObject.GetComponent<MeshRenderer> ();
 		}
 
 		void Update () {
-			this.transform.localScale = Vector3.Lerp (this.transform.localScale, new Vector3 (1f, this.targetHeigtScale, 1F), Time.deltaTime * this.lerpFactor);
+			
+			this.transform.localScale = Vector3.Lerp (this.transform.localScale, new Vector3 (1f, this.targetHeightScale, 1F), Time.deltaTime * this.lerpFactor);
+			this.mr.enabled = this.transform.localScale.y > 0.1F; 
+
 		}
 
 	}

@@ -27,7 +27,7 @@ namespace BostonViz {
 				GeorefPositionKeeper keeper = colObj.GetComponent<GeorefPositionKeeper> ();
 
 				// Set params
-				ctrl.targetHeigtScale = col.height;
+				ctrl.targetHeightScale = col.height;
 				keeper.latLon = col.postion;
 
 			}

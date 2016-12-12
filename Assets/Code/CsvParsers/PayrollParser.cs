@@ -17,9 +17,7 @@ namespace BostonViz {
 			this.entries = new List<PayrollEntry> ();
 
 			string[] lines = rawCsv.Split ('\n');
-
-			Debug.Log(lines [0].Split (','));
-
+			
 			for (int i = 1; i < lines.Length; i++) {
 
 				string[] line = lines [i].Split (',');
